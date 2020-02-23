@@ -1,0 +1,36 @@
+version: '2.4'
+
+services:
+  rtsp-server:
+    image: ${IMAGE_NAME:-mpromonet/v4l2rtspserver}:${IMAGE_TAG:-latest}
+    container_name: ${CONTAINER_NAME:-rtsp-server}
+    command:
+      - -P
+      - ${INTERNAL_PORT}
+      - -u
+      - ${URL}
+      - -U
+      - ${CREDENTIALS}
+      - -W
+      - ${VIDEO_WIDTH}
+      - -H
+      - ${VIDEO_HEIGHT}
+      - -F
+      - ${VIDEO_FPS}
+      - ${VIDEO_DEVICE}
+    networks:
+      motion-net:
+    ports:
+      - ${PORT}:${INTERNAL_PORT}
+    devices:
+      - ${VIDEO_DEVICE}
+    restart: always
+    cpus: '${CPUS:-0.5}'
+    mem_limit: ${MEM_LIMIT:-8M}
+    mem_reservation: ${MEM_RESERVATION:-4M}
+
+networks:
+  motion-net:
+    name: ${MOTION_NET_NAME}
+    driver: ${MOTION_NET_DRIVER}
+    external: true
